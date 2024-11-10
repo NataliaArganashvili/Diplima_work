@@ -6,6 +6,11 @@ driver = webdriver.Chrome()
 
 from pages_aviasales.main_page import MainPage
 
+#@allure.title("Проверка сайта aviasales.ru")
+#@allure.description("Проверка сайта поиска авиабилетов")
+#@allure.feature("GET") 
+#@allure.severity("blocker")
+
 #Проверка в одну сторону
 def test_one_way():
     main_page = MainPage(driver)
