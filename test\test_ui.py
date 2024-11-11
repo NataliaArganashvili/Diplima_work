@@ -1,85 +1,50 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.common.by import By
 
 driver = webdriver.Chrome()
+driver.implicitly_wait(10)
 
 from pages_aviasales.main_page import MainPage
 
-#@allure.title("Проверка сайта aviasales.ru")
-#@allure.description("Проверка сайта поиска авиабилетов")
-#@allure.feature("GET") 
-#@allure.severity("blocker")
+@allure.title("Проверка сайта aviasales.ru")
+@allure.description("Проверка сайта поиска авиабилетов")
+@allure.feature("GET") 
+@allure.severity("blocker")
 
-#Проверка в одну сторону
-def test_one_way():
-    main_page = MainPage(driver)
-    main_page.fill_origin("Москва")
-    main_page.fill_destination("Новокузнецк")
-    main_page.open_calender()
-    main_page.choose_date("12.12.2024")
-    main_page.click_search()
-    main_page.waiter()
-    origin = main_page.get_origin_value()
-    destination = main_page.get_destination_value()
+def test_open_page():
+    current_city = "Москва"
+    driver.implicitly_wait(10)
+    driver.get("https://www.aviasales.ru/")
+    assert driver.find_element(By.ID, "avia_form_origin-input").get_attribute("value") == current_city
     driver.quit()
-    assert origin == "Москва" 
-    assert destination == "Новокузнецк"
 
-#Проверка туда и обратно
-def test_two_ways():
+def test_hotels():
     main_page = MainPage(driver)
     main_page.fill_origin("Москва")
     main_page.fill_destination("Новокузнецк")
     main_page.open_calender()
     main_page.choose_date("12.12.2024")
-    main_page.choose_date("19.12.2024")
     main_page.click_search()
-    main_page.waiter()
-    origin = main_page.get_origin_value()
-    destination = main_page.get_destination_value()
-    driver.quit()
-    assert origin == "Москва" 
-    assert destination == "Новокузнецк"
+    assert "https://ostrovok.ru/" in driver.current_url
 
-#Проверка 2 пассажиров
-def test_two_passangers():
-    main_page = MainPage(driver)
-    main_page.fill_origin("Москва")
-    main_page.fill_destination("Новокузнецк")
-    main_page.open_calender()
-    main_page.choose_date("12.12.2024")
-    main_page.choose_passangers_quantity()
-    main_page.click_search()
-    main_page.waiter()
-    passengers_quantity = main_page.get_passengers_quantity()
-    driver.quit()
-    assert "2 пассажира" in passengers_quantity
+def test_text():
+    driver.implicitly_wait(10)
+    driver.get("https://www.aviasales.ru/")
+    expected_text = "Тут покупают дешёвые авиабилеты"
+    header = driver.find_element(By.CSS_SELECTOR, "h1.header__title")
+    assert header.text == expected_text
 
-#Проверка первого-класса
-def test_first_class():
+def test_negative_destination():
+    driver.implicitly_wait(10)
     main_page = MainPage(driver)
-    main_page.fill_origin("Москва")
-    main_page.fill_destination("Новокузнецк")
-    main_page.open_calender()
-    main_page.choose_date("12.12.2024")
-    main_page.choose_first_class()
     main_page.click_search()
-    main_page.waiter()
-    class_name = main_page.get_class()
-    driver.quit()
-    assert "Первый класс" in class_name
-    
-#Проверка класса комфорт
-def test_comfort_class():
+    element = driver.find_element(By.XPATH, '//div[text()="Укажите город прибытия"]')
+    assert element.is_displyed()
+
+def test_negative_date():
+    driver.implicitly_wait(10)
     main_page = MainPage(driver)
-    main_page.fill_origin("Москва")
-    main_page.fill_destination("Новокузнецк")
-    main_page.open_calender()
-    main_page.choose_date("12.12.2024")
-    main_page.choose_comfort_class()
     main_page.click_search()
-    main_page.waiter()
-    class_name = main_page.get_class()
-    driver.quit()
-    assert "Комфорт" in class_name
-    
+    element = driver.find_element(By.XPATH, '//div[text()="Укажите дату"]')
+    assert element.is_displyed()
