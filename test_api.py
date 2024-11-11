@@ -1,18 +1,16 @@
 import requests
 
-@allure.title("Проверка сайта aviasales.ru поиска авиабилетов")
-@allure.description("Проверка сайта поиска авиабилетов")
-@allure.feature("GET") 
-@allure.severity("blocker")
-
 base_url = "https://min-prices.aviasales.ru/price_matrix?"
 
 my_headers = {
     "Content-Type": "application/json"
 }
 
+
+@allure.title("Поиск билета в одну сторону - позитивная проверка")
+@allure.feature("GET") 
+@allure.severity("blocker")
 def test_get_oneway_positive() -> str:
-    """Поиск билета в одну сторону - позитивная проверка"""
     city1 = "MOW"
     city2 = "STW"
     date = "2024-12-15"
@@ -22,8 +20,10 @@ def test_get_oneway_positive() -> str:
     with allure.step("Проверка"):
         assert len(lst) > 0
 
+@allure.title("Поиск билета в обе стороны - позитивная проверка")
+@allure.feature("GET") 
+@allure.severity("blocker")
 def test_get_twoways_positive() -> str:
-    """Поиск билета в обе стороны - позитивная проверка"""
     city1 = "MOW"
     city2 = "STW"
     date1 = "2024-12-15"
@@ -34,8 +34,10 @@ def test_get_twoways_positive() -> str:
     with allure.step("Проверка"):
         assert len(lst) > 0
 
+@allure.title("Поиск билета с числом 31 месяца с 31 днями - позитивная проверка")
+@allure.feature("GET") 
+@allure.severity("blocker")
 def test_get_date_31_positive() -> str:
-    """Поиск билета с числом 31 месяца с 31 днями - позитивная проверка"""
     city1 = "MOW"
     city2 = "STW"
     date1 = "2024-12-15"
@@ -46,8 +48,10 @@ def test_get_date_31_positive() -> str:
     with allure.step("Проверка"):
         assert len(lst) > 0
 
+@allure.title("Поиск билета с числом 31 месяца с 30 днями - негативная проверка")
+@allure.feature("GET") 
+@allure.severity("blocker")
 def test_get_date_31_negative() -> str:
-    """Поиск билета с числом 31 месяца с 30 днями - негативная проверка"""
     city1 = "MOW"
     city2 = "NOZ"
     date = "2024-11-31"
@@ -56,8 +60,10 @@ def test_get_date_31_negative() -> str:
     with allure.step("Проверка"):
         assert resp.status_code == 400
 
+@allure.title("Поиск билета в город с невалидным кодом - негативная проверка")
+@allure.feature("GET") 
+@allure.severity("blocker")
 def test_get_invalid_city_code() -> str:
-    """Поиск билета в город с невалидным кодом - негативная проверка"""
     city1 = "MOW"
     city2 = "QWE"
     date = "2024-11-30"
